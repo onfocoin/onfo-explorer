@@ -1,32 +1,32 @@
-import React from 'react'
+import React from "react";
 
-import Col from 'react-bootstrap/lib/Col'
-import Grid from 'react-bootstrap/lib/Grid'
-import Row from 'react-bootstrap/lib/Row'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import InputGroup from 'react-bootstrap/lib/InputGroup'
-import Modal from 'react-bootstrap/lib/Modal'
+import Col from "react-bootstrap/lib/Col";
+import Grid from "react-bootstrap/lib/Grid";
+import Row from "react-bootstrap/lib/Row";
+import FormControl from "react-bootstrap/lib/FormControl";
+import Glyphicon from "react-bootstrap/lib/Glyphicon";
+import InputGroup from "react-bootstrap/lib/InputGroup";
+import Modal from "react-bootstrap/lib/Modal";
 
-import {withRouter} from 'react-router'
-import {injectIntl} from 'react-intl'
+import { withRouter } from "react-router";
+import { injectIntl } from "react-intl";
 
-import {searchStrToPath} from '../../lib/search'
-import {isSecretKey} from '../../lib/stellar/utils'
+import { searchStrToPath } from "../../lib/search";
+import { isSecretKey } from "../../lib/stellar/utils";
 
-const HelpModal = props => (
+const HelpModal = (props) => (
   <Modal id="help-modal" show={props.show} onHide={props.handleCloseFn}>
     <Modal.Header closeButton>
-      <Modal.Title id="contained-modal-title-lg" style={{color: '#dce2ec'}}>
+      <Modal.Title id="contained-modal-title-lg" style={{ color: "#dce2ec" }}>
         Search Help
       </Modal.Title>
     </Modal.Header>
-    <Modal.Body style={{color: '#96a2b4'}}>
+    <Modal.Body style={{ color: "#96a2b4" }}>
       <h4>Search By:</h4>
       <br />
       <div>
-        <h5>Stellar Address</h5>
-        Also called a{' '}
+        <h5>Onfo Address</h5>
+        Also called a{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -51,11 +51,11 @@ const HelpModal = props => (
       <div>
         <h5>Anchor Name</h5>
         <div>
-          as listed on the{' '}
+          as listed on the{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://steexp.com/anchors"
+            href="https://explorer.onfo.com/anchors"
           >
             Anchors Page
           </a>
@@ -69,13 +69,11 @@ const HelpModal = props => (
             alt="search by anchor full name"
           />
         </div>
-        <div style={{marginTop: 20}}>
+        <div style={{ marginTop: 20 }}>
           Partial name:
           <br />
           <img
-            src={`${
-              process.env.PUBLIC_URL
-            }/search/search_anchor_name_partial.png`}
+            src={`${process.env.PUBLIC_URL}/search/search_anchor_name_partial.png`}
             alt="search by anchor partial name"
           />
         </div>
@@ -105,7 +103,7 @@ const HelpModal = props => (
       <hr />
       <h4>OpenSearch:</h4>
       <div>
-        Stellar Explorer supports{' '}
+        Onfo Explorer supports{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -115,7 +113,7 @@ const HelpModal = props => (
         </a>
         . This allows you to search directly from your browser search box or
         search bar. You should see something like the following when you
-        navigate to Stellar Explorer then open the search box. Install it from
+        navigate to Onfo Explorer then open the search box. Install it from
         there:
         <br />
         <img
@@ -126,73 +124,76 @@ const HelpModal = props => (
       </div>
     </Modal.Body>
   </Modal>
-)
+);
 
 class SearchBox extends React.Component {
   state = {
-    searchStr: '',
+    searchStr: "",
     showHelp: false,
-  }
+  };
 
   constructor(props, context) {
-    super(props, context)
-    this.handleClick = this.handleClick.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+    super(props, context);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   handleClose() {
-    this.setState({show: false})
+    this.setState({ show: false });
   }
 
   handleClick(event) {
-    event.preventDefault()
-    this.setState({show: true})
+    event.preventDefault();
+    this.setState({ show: true });
   }
 
-  searchHandler = event => {
-    event.preventDefault()
-    const matchPath = searchStrToPath(this.state.searchStr)
-    this.props.history.push(matchPath)
+  searchHandler = (event) => {
+    event.preventDefault();
+    const matchPath = searchStrToPath(this.state.searchStr);
+    this.props.history.push(matchPath);
     // #62 security: clear search box if user put the secret key there
     if (isSecretKey(this.state.searchStr)) {
-      this.setState({searchStr: ''})
+      this.setState({ searchStr: "" });
     }
-  }
+  };
 
   render() {
-    const {formatMessage} = this.props.intl
+    const { formatMessage } = this.props.intl;
     return (
       <Grid>
-      <Row>
-        <Col id="Search-Container">
-        <form onSubmit={this.searchHandler}>
-          <InputGroup>
-            <FormControl
-              type="text"
-              onChange={e => this.setState({searchStr: e.target.value})}
-              placeholder={formatMessage({id: 'search.placeHolder'})}
-              value={this.state.searchStr}
-            />
-            <InputGroup.Addon>
-              <Glyphicon glyph="search" onClick={this.searchHandler} />
-            </InputGroup.Addon>
-            <InputGroup.Addon>
-              <Glyphicon
-                className="info-icon"
-                glyph="info-sign"
-                onClick={this.handleClick}
+        <Row>
+          <Col id="Search-Container">
+            <form onSubmit={this.searchHandler}>
+              <InputGroup>
+                <FormControl
+                  type="text"
+                  onChange={(e) => this.setState({ searchStr: e.target.value })}
+                  placeholder={formatMessage({ id: "search.placeHolder" })}
+                  value={this.state.searchStr}
+                />
+                <InputGroup.Addon>
+                  <Glyphicon glyph="search" onClick={this.searchHandler} />
+                </InputGroup.Addon>
+                <InputGroup.Addon>
+                  <Glyphicon
+                    className="info-icon"
+                    glyph="info-sign"
+                    onClick={this.handleClick}
+                  />
+                </InputGroup.Addon>
+              </InputGroup>
+            </form>
+            {this.state.show && (
+              <HelpModal
+                handleCloseFn={this.handleClose}
+                show={this.state.show}
               />
-            </InputGroup.Addon>
-          </InputGroup>
-        </form>
-        {this.state.show && (
-          <HelpModal handleCloseFn={this.handleClose} show={this.state.show} />
-        )}
-      </Col>
-    </Row>
-  </Grid>
-    )
+            )}
+          </Col>
+        </Row>
+      </Grid>
+    );
   }
 }
 
-export default injectIntl(withRouter(SearchBox))
+export default injectIntl(withRouter(SearchBox));

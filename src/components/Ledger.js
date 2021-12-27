@@ -1,34 +1,35 @@
-import React from 'react'
-import Col from 'react-bootstrap/lib/Col'
-import Grid from 'react-bootstrap/lib/Grid'
-import Panel from 'react-bootstrap/lib/Panel'
-import Row from 'react-bootstrap/lib/Row'
-import Table from 'react-bootstrap/lib/Table'
-import {Link} from 'react-router-dom'
+import React from "react";
+import Col from "react-bootstrap/lib/Col";
+import Grid from "react-bootstrap/lib/Grid";
+import Panel from "react-bootstrap/lib/Panel";
+import Row from "react-bootstrap/lib/Row";
+import Table from "react-bootstrap/lib/Table";
+import { Link } from "react-router-dom";
 import {
   injectIntl,
   FormattedDate,
   FormattedNumber,
   FormattedMessage,
   FormattedTime,
-} from 'react-intl'
-import has from 'lodash/has'
+} from "react-intl";
+import has from "lodash/has";
 
-import {stroopsToLumens} from '../lib/stellar/utils'
-import {handleFetchDataFailure, setTitle, shortHash} from '../lib/utils'
-import ClipboardCopy from './shared/ClipboardCopy'
-import {withServer} from './shared/HOCs'
-import TransactionTable from './TransactionTableContainer'
-import {titleWithJSONButton} from './shared/TitleWithJSONButton'
+import { stroopsToLumens } from "../lib/stellar/utils";
+import { handleFetchDataFailure, setTitle, shortHash } from "../lib/utils";
+import ClipboardCopy from "./shared/ClipboardCopy";
+import { withServer } from "./shared/HOCs";
+import TransactionTable from "./TransactionTableContainer";
+import { titleWithJSONButton } from "./shared/TitleWithJSONButton";
 
-const ledgerHash = hash => shortHash(hash, 20)
+const ledgerHash = (hash) => shortHash(hash, 20);
 
-const responseToState = rsp => {
-  setTitle(`Ledger ${rsp.sequence}`)
+const responseToState = (rsp) => {
+  setTitle(`Ledger ${rsp.sequence}`);
   // NOTE: as at 11 March 2018 testnet horizon returns base values in stroops
   //        but mainnet returns in lumens. so handling both until all are moved
   //        to stroops.
-  const baseInStroops = has(rsp, 'base_fee_in_stroops')
+  const baseInStroops = has(rsp, "base_fee_in_stroops");
+  console.log(rsp);
   return {
     seq: rsp.sequence,
     time: rsp.closed_at,
@@ -46,17 +47,17 @@ const responseToState = rsp => {
     baseInStroops,
     baseFee: baseInStroops ? rsp.base_fee_in_stroops : rsp.base_fee,
     baseReserve: baseInStroops ? rsp.base_reserve_in_stroops : rsp.base_reserve,
-  }
-}
+  };
+};
 
-const DetailRow = ({label, children}) => (
+const DetailRow = ({ label, children }) => (
   <tr>
     <td>
       <FormattedMessage id={label} />
     </td>
     <td>{children}</td>
   </tr>
-)
+);
 
 class Ledger extends React.Component {
   render() {
@@ -77,9 +78,9 @@ class Ledger extends React.Component {
       txCountSuccessful,
       txCountFailed,
       urlFn,
-    } = this.props
+    } = this.props;
 
-    const {formatMessage} = this.props.intl
+    const { formatMessage } = this.props.intl;
 
     return (
       <Grid>
@@ -87,7 +88,7 @@ class Ledger extends React.Component {
           <Panel
             header={titleWithJSONButton(
               <span>
-                {formatMessage({id: 'ledger'})}{' '}
+                {formatMessage({ id: "ledger" })}{" "}
                 <span className="secondary-heading">{seq}</span>
                 <ClipboardCopy text={String(seq)} />
               </span>,
@@ -98,7 +99,7 @@ class Ledger extends React.Component {
               <Table>
                 <tbody>
                   <DetailRow label="time">
-                    <FormattedDate value={time} />{' '}
+                    <FormattedDate value={time} />{" "}
                     <FormattedTime value={time} />
                   </DetailRow>
                   <DetailRow label="hash">
@@ -130,14 +131,14 @@ class Ledger extends React.Component {
                   <DetailRow label="base.reserve">
                     {baseInStroops
                       ? stroopsToLumens(baseReserve)
-                      : Number(baseReserve)}{' '}
-                    XLM
+                      : Number(baseReserve)}{" "}
+                    ONFO
                   </DetailRow>
                   <DetailRow label="fee.pool">
-                    <FormattedNumber value={feePool} /> XLM
+                    <FormattedNumber value={feePool} /> ONFO
                   </DetailRow>
                   <DetailRow label="total.coins">
-                    <FormattedNumber value={totalCoins} /> XLM
+                    <FormattedNumber value={totalCoins} /> ONFO
                   </DetailRow>
                   <DetailRow label="protocolVersion">{protocol}</DetailRow>
                 </tbody>
@@ -162,21 +163,21 @@ class Ledger extends React.Component {
           </Row>
         )}
       </Grid>
-    )
+    );
   }
 }
 
 class LedgerContainer extends React.Component {
   state = {
     seq: 0,
-  }
+  };
 
   componentDidMount() {
-    this.loadLedger(this.props.match.params.id)
+    this.loadLedger(this.props.match.params.id);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.loadLedger(nextProps.match.params.id)
+    this.loadLedger(nextProps.match.params.id);
   }
 
   loadLedger(ledgerId) {
@@ -184,11 +185,11 @@ class LedgerContainer extends React.Component {
       .ledgers()
       .ledger(ledgerId)
       .call()
-      .then(res => {
-        this.setState(responseToState(res))
-        return null
+      .then((res) => {
+        this.setState(responseToState(res));
+        return null;
       })
-      .catch(handleFetchDataFailure(ledgerId))
+      .catch(handleFetchDataFailure(ledgerId));
   }
 
   render() {
@@ -198,8 +199,8 @@ class LedgerContainer extends React.Component {
         {...this.state}
         {...this.props}
       />
-    )
+    );
   }
 }
 
-export default injectIntl(withServer(LedgerContainer))
+export default injectIntl(withServer(LedgerContainer));

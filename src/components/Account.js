@@ -1,38 +1,42 @@
-import React from 'react'
-import Col from 'react-bootstrap/lib/Col'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import Grid from 'react-bootstrap/lib/Grid'
-import Panel from 'react-bootstrap/lib/Panel'
-import Row from 'react-bootstrap/lib/Row'
-import Table from 'react-bootstrap/lib/Table'
-import Tab from 'react-bootstrap/lib/Tab'
-import Tabs from 'react-bootstrap/lib/Tabs'
-import {injectIntl, FormattedMessage} from 'react-intl'
-import {FederationServer, MuxedAccount, StrKey} from 'stellar-sdk'
-import has from 'lodash/has'
+import React from "react";
+import Col from "react-bootstrap/lib/Col";
+import Glyphicon from "react-bootstrap/lib/Glyphicon";
+import Grid from "react-bootstrap/lib/Grid";
+import Panel from "react-bootstrap/lib/Panel";
+import Row from "react-bootstrap/lib/Row";
+import Table from "react-bootstrap/lib/Table";
+import Tab from "react-bootstrap/lib/Tab";
+import Tabs from "react-bootstrap/lib/Tabs";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { FederationServer, MuxedAccount, StrKey } from "stellar-sdk";
+import has from "lodash/has";
 
-import knownAccounts from '../data/known_accounts'
-import {isFederatedAddress, isMuxedAddress, isPublicKey} from '../lib/stellar/utils'
-import {base64Decode, handleFetchDataFailure, setTitle} from '../lib/utils'
-import {withServer} from './shared/HOCs'
-import {withSpinner} from './shared/Spinner'
-import {titleWithJSONButton} from './shared/TitleWithJSONButton'
+import knownAccounts from "../data/known_accounts";
+import {
+  isFederatedAddress,
+  isMuxedAddress,
+  isPublicKey,
+} from "../lib/stellar/utils";
+import { base64Decode, handleFetchDataFailure, setTitle } from "../lib/utils";
+import { withServer } from "./shared/HOCs";
+import { withSpinner } from "./shared/Spinner";
+import { titleWithJSONButton } from "./shared/TitleWithJSONButton";
 
-import AccountLink from './shared/AccountLink'
-import Asset from './shared/Asset'
-import ClipboardCopy from './shared/ClipboardCopy'
-import EffectTable from './EffectTable'
-import FormattedAmount from './shared/FormattedAmount'
-import Logo from './shared/Logo'
-import OperationTable from './OperationTable'
-import OfferTable from './OfferTable'
-import PaymentTable from './PaymentTable'
-import TradeTable from './TradeTable'
-import TransactionTable from './TransactionTableContainer'
+import AccountLink from "./shared/AccountLink";
+import Asset from "./shared/Asset";
+import ClipboardCopy from "./shared/ClipboardCopy";
+import EffectTable from "./EffectTable";
+import FormattedAmount from "./shared/FormattedAmount";
+import Logo from "./shared/Logo";
+import OperationTable from "./OperationTable";
+import OfferTable from "./OfferTable";
+import PaymentTable from "./PaymentTable";
+import TradeTable from "./TradeTable";
+import TransactionTable from "./TransactionTableContainer";
 
-const NameValueTable = ({data, decodeValue = false}) => {
+const NameValueTable = ({ data, decodeValue = false }) => {
   if (!data || Object.keys(data).length === 0)
-    return <div style={{marginTop: 20, marginBottom: 20}}>No Data</div>
+    return <div style={{ marginTop: 20, marginBottom: 20 }}>No Data</div>;
   return (
     <Table>
       <thead>
@@ -46,11 +50,11 @@ const NameValueTable = ({data, decodeValue = false}) => {
         </tr>
       </thead>
       <tbody>
-        {Object.keys(data).map(key => (
+        {Object.keys(data).map((key) => (
           <tr key={key}>
             <td>{key}</td>
             <td>
-              {typeof data[key] === 'boolean'
+              {typeof data[key] === "boolean"
                 ? data[key].toString()
                 : decodeValue
                 ? base64Decode(data[key])
@@ -60,11 +64,11 @@ const NameValueTable = ({data, decodeValue = false}) => {
         ))}
       </tbody>
     </Table>
-  )
-}
+  );
+};
 
-const balanceRow = bal => (
-  <tr key={bal.asset_code ? `${bal.asset_code}-${bal.asset_issuer}` : 'XLM'}>
+const balanceRow = (bal) => (
+  <tr key={bal.asset_code ? `${bal.asset_code}-${bal.asset_issuer}` : "ONFO"}>
     <td>
       <Asset
         type={bal.asset_type}
@@ -81,9 +85,9 @@ const balanceRow = bal => (
       <span className="break">{bal.limit}</span>
     </td>
   </tr>
-)
+);
 
-const Balances = props => (
+const Balances = (props) => (
   <Table>
     <thead>
       <tr>
@@ -100,9 +104,9 @@ const Balances = props => (
     </thead>
     <tbody>{props.balances.map(balanceRow)}</tbody>
   </Table>
-)
+);
 
-const Thresholds = ({thresholds}) => (
+const Thresholds = ({ thresholds }) => (
   <Table>
     <thead>
       <tr>
@@ -125,9 +129,9 @@ const Thresholds = ({thresholds}) => (
       </tr>
     </tbody>
   </Table>
-)
+);
 
-const Signers = props => (
+const Signers = (props) => (
   <Table>
     <thead>
       <tr>
@@ -143,16 +147,16 @@ const Signers = props => (
       </tr>
     </thead>
     <tbody>
-      {props.signers.map(signer => (
+      {props.signers.map((signer) => (
         <tr key={signer.key}>
           <td>
-            {signer.type === 'ed25519_public_key' && (
+            {signer.type === "ed25519_public_key" && (
               <AccountLink account={signer.key} />
             )}
-            {signer.type === 'sha256_hash' &&
-              StrKey.decodeSha256Hash(signer.key).toString('hex')}
-            {signer.type === 'preauth_tx' &&
-              StrKey.decodePreAuthTx(signer.key).toString('hex')}
+            {signer.type === "sha256_hash" &&
+              StrKey.decodeSha256Hash(signer.key).toString("hex")}
+            {signer.type === "preauth_tx" &&
+              StrKey.decodePreAuthTx(signer.key).toString("hex")}
           </td>
           <td>{signer.weight}</td>
           <td>{signer.type}</td>
@@ -160,29 +164,23 @@ const Signers = props => (
       ))}
     </tbody>
   </Table>
-)
+);
 
-const MuxedAccountInfoPanel = ({
-  address,
-}) => {
+const MuxedAccountInfoPanel = ({ address }) => {
   return (
     <Panel>
-      <Glyphicon
-        glyph="info-sign"
-        onClick={this.handleClick}
-      />
+      <Glyphicon glyph="info-sign" onClick={this.handleClick} />
+      &nbsp; NOTE: This view shows the base account of the multiplexed account
       &nbsp;
-      NOTE: This view shows the base account of the multiplexed account
-      &nbsp;
-      <span style={{color: 'white', overflowWrap: 'break-word'}}>
+      <span style={{ color: "white", overflowWrap: "break-word" }}>
         {address}
       </span>
     </Panel>
-  )
-}
+  );
+};
 
-const Flags = ({flags}) => <NameValueTable data={flags} />
-const Data = ({data}) => <NameValueTable data={data} decodeValue />
+const Flags = ({ flags }) => <NameValueTable data={flags} />;
+const Data = ({ data }) => <NameValueTable data={data} decodeValue />;
 
 const AccountSummaryPanel = ({
   account: a,
@@ -191,16 +189,16 @@ const AccountSummaryPanel = ({
   formatMessageFn,
   knownAccounts,
 }) => {
-  setTitle(`Account ${a.id}`)
+  setTitle(`Account ${a.id}`);
 
   const header = titleWithJSONButton(
-    formatMessageFn({id: 'account'}),
+    formatMessageFn({ id: "account" }),
     accountUrl
-  )
+  );
 
   return (
     <Panel header={header}>
-      <Grid style={{paddingLeft: 0}}>
+      <Grid style={{ paddingLeft: 0 }}>
         <Row>
           <Col md={10}>
             <Row>
@@ -208,7 +206,9 @@ const AccountSummaryPanel = ({
                 <FormattedMessage id="key.public" />:
               </Col>
               <Col md={9}>
-                <span className="break" style={{color: 'white'}}>{a.id}</span>
+                <span className="break" style={{ color: "white" }}>
+                  {a.id}
+                </span>
                 <ClipboardCopy text={a.id} />
               </Col>
             </Row>
@@ -237,72 +237,71 @@ const AccountSummaryPanel = ({
               <Col md={9}>{a.subentry_count}</Col>
             </Row>
           </Col>
-          {has(knownAccounts, a.id) &&
-            knownAccounts[a.id].logo && (
-              <Col md={2}>
-                <div style={{marginBottom: 10}}>
-                  <Logo
-                    type={knownAccounts[a.id].type}
-                    name={knownAccounts[a.id].logo}
-                  />
-                </div>
-              </Col>
-            )}
+          {has(knownAccounts, a.id) && knownAccounts[a.id].logo && (
+            <Col md={2}>
+              <div style={{ marginBottom: 10 }}>
+                <Logo
+                  type={knownAccounts[a.id].type}
+                  name={knownAccounts[a.id].logo}
+                />
+              </div>
+            </Col>
+          )}
         </Row>
       </Grid>
     </Panel>
-  )
-}
+  );
+};
 
 class Account extends React.Component {
   state = {
-    key: 'balances',
+    key: "balances",
     renderEffects: false,
-  }
+  };
 
   constructor(props, context) {
-    super(props, context)
-    this.handleURIHash = this.handleURIHash.bind(this)
-    this.handleSelect = this.handleSelect.bind(this)
-    this.setNewState = this.setNewState.bind(this)
+    super(props, context);
+    this.handleURIHash = this.handleURIHash.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.setNewState = this.setNewState.bind(this);
   }
 
   componentDidMount() {
-    this.handleURIHash()
+    this.handleURIHash();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.handleURIHash()
+    this.handleURIHash();
   }
 
   setNewState(tabKey) {
-    const newState = {key: tabKey}
-    if (tabKey === 'effects') newState.renderEffects = true
-    this.setState(newState)
+    const newState = { key: tabKey };
+    if (tabKey === "effects") newState.renderEffects = true;
+    this.setState(newState);
   }
 
   handleURIHash() {
-    if (has(window.location, 'hash') && window.location.hash.length > 1) {
-      const tab = window.location.hash.substring(1) // string after '#'
-      this.setNewState(tab)
+    if (has(window.location, "hash") && window.location.hash.length > 1) {
+      const tab = window.location.hash.substring(1); // string after '#'
+      this.setNewState(tab);
     }
   }
 
   handleSelect(key) {
-    window.location.hash = `#${key}`
-    this.setNewState(key)
+    window.location.hash = `#${key}`;
+    this.setNewState(key);
   }
 
   render() {
-    const {formatMessage} = this.props.intl
-    const a = this.props.account
+    const { formatMessage } = this.props.intl;
+    const a = this.props.account;
     return (
       <Grid>
-        {this.props.muxedAddress && 
-        <Row>
-          <MuxedAccountInfoPanel address={this.props.muxedAddress}/>
-        </Row>
-        }
+        {this.props.muxedAddress && (
+          <Row>
+            <MuxedAccountInfoPanel address={this.props.muxedAddress} />
+          </Row>
+        )}
         <Row>
           <AccountSummaryPanel
             account={a}
@@ -317,12 +316,12 @@ class Account extends React.Component {
             id="account-tabs"
             activeKey={this.state.key}
             onSelect={this.handleSelect}
-            style={{border: '1px solid #ddd', borderRadius: 4}}
+            style={{ border: "1px solid #ddd", borderRadius: 4 }}
           >
-            <Tab eventKey="balances" title={formatMessage({id: 'balances'})}>
+            <Tab eventKey="balances" title={formatMessage({ id: "balances" })}>
               <Balances balances={a.balances} />
             </Tab>
-            <Tab eventKey="payments" title={formatMessage({id: 'payments'})}>
+            <Tab eventKey="payments" title={formatMessage({ id: "payments" })}>
               <PaymentTable
                 key={a.id}
                 account={a.id}
@@ -331,7 +330,7 @@ class Account extends React.Component {
                 usePaging
               />
             </Tab>
-            <Tab eventKey="offers" title={formatMessage({id: 'offers'})}>
+            <Tab eventKey="offers" title={formatMessage({ id: "offers" })}>
               <OfferTable
                 key={a.id}
                 account={a.id}
@@ -341,24 +340,26 @@ class Account extends React.Component {
                 usePaging
               />
             </Tab>
-            <Tab eventKey="trades" title={formatMessage({id: 'trades'})}>
+            <Tab eventKey="trades" title={formatMessage({ id: "trades" })}>
               <TradeTable key={a.id} account={a.id} limit={20} usePaging />
             </Tab>
-            <Tab eventKey="effects" title={formatMessage({id: 'effects'})}>
-              {// OPTIMISATION: render on focus only as it hits the server for every effect
-              this.state.renderEffects === true && (
-                <EffectTable
-                  key={a.id}
-                  account={a.id}
-                  limit={20}
-                  showAccount={false}
-                  usePaging
-                />
-              )}
+            <Tab eventKey="effects" title={formatMessage({ id: "effects" })}>
+              {
+                // OPTIMISATION: render on focus only as it hits the server for every effect
+                this.state.renderEffects === true && (
+                  <EffectTable
+                    key={a.id}
+                    account={a.id}
+                    limit={20}
+                    showAccount={false}
+                    usePaging
+                  />
+                )
+              }
             </Tab>
             <Tab
               eventKey="operations"
-              title={formatMessage({id: 'operations'})}
+              title={formatMessage({ id: "operations" })}
             >
               <OperationTable
                 key={a.id}
@@ -370,7 +371,7 @@ class Account extends React.Component {
             </Tab>
             <Tab
               eventKey="transactions"
-              title={formatMessage({id: 'transactions'})}
+              title={formatMessage({ id: "transactions" })}
             >
               <TransactionTable
                 key={a.id}
@@ -381,7 +382,7 @@ class Account extends React.Component {
                 usePaging
               />
             </Tab>
-            <Tab eventKey="signing" title={formatMessage({id: 'signing'})}>
+            <Tab eventKey="signing" title={formatMessage({ id: "signing" })}>
               <Row>
                 <Col md={7}>
                   <Signers signers={a.signers} />
@@ -389,7 +390,7 @@ class Account extends React.Component {
                 <Col
                   md={3}
                   mdOffset={1}
-                  style={{border: '1px solid white', marginTop: 30}}
+                  style={{ border: "1px solid white", marginTop: 30 }}
                 >
                   <h4>
                     <FormattedMessage id="thresholds" />
@@ -398,19 +399,19 @@ class Account extends React.Component {
                 </Col>
               </Row>
             </Tab>
-            <Tab eventKey="flags" title={formatMessage({id: 'flags'})}>
+            <Tab eventKey="flags" title={formatMessage({ id: "flags" })}>
               <Flags flags={a.flags} />
             </Tab>
-            <Tab eventKey="data" title={formatMessage({id: 'data'})}>
+            <Tab eventKey="data" title={formatMessage({ id: "data" })}>
               <Data data={a.data_attr} />
             </Tab>
           </Tabs>
         </Row>
       </Grid>
-    )
+    );
   }
 }
-const AccountWithSpinner = withSpinner()(Account)
+const AccountWithSpinner = withSpinner()(Account);
 
 class AccountContainer extends React.Component {
   state = {
@@ -418,64 +419,62 @@ class AccountContainer extends React.Component {
     account: null,
     federatedAddress: null,
     muxedAddress: null,
-  }
+  };
 
   componentDidMount() {
-    this.loadAccount(this.props.match.params.id)
+    this.loadAccount(this.props.match.params.id);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.loadAccount(nextProps.match.params.id)
+    this.loadAccount(nextProps.match.params.id);
   }
 
   loadAccount(accountId) {
     if (isPublicKey(accountId)) {
-      this.loadAccountByKey(accountId)
+      this.loadAccountByKey(accountId);
     } else if (isFederatedAddress(accountId)) {
-      this.loadAccountByFederatedAddress(accountId)
+      this.loadAccountByFederatedAddress(accountId);
     } else if (isMuxedAddress(accountId)) {
-      this.loadAccountByMuxedAddress(accountId)
+      this.loadAccountByMuxedAddress(accountId);
     } else {
       handleFetchDataFailure(accountId)(
         new Error(`Unrecognized account: ${accountId}`)
-      )
+      );
     }
   }
 
   loadAccountByKey(accountId) {
-    this.loadAccountFromServer(accountId).then(res => {
-      this.setState({account: res, isLoading: false})
-      return null
-    })
-    .catch(handleFetchDataFailure(accountId))
+    this.loadAccountFromServer(accountId)
+      .then((res) => {
+        this.setState({ account: res, isLoading: false });
+        return null;
+      })
+      .catch(handleFetchDataFailure(accountId));
   }
 
   loadAccountByFederatedAddress(address) {
-    const [name, domain] = address.split('*')
+    const [name, domain] = address.split("*");
     FederationServer.createForDomain(domain)
-      .then(fed => fed.resolveAddress(name))
-      .then(acc => this.loadAccountFromServer(acc.account_id))
-      .then(account => {
-        this.setState({account, federatedAddress: address, isLoading: false})
-        return null
+      .then((fed) => fed.resolveAddress(name))
+      .then((acc) => this.loadAccountFromServer(acc.account_id))
+      .then((account) => {
+        this.setState({ account, federatedAddress: address, isLoading: false });
+        return null;
       })
-      .catch(handleFetchDataFailure(address))
+      .catch(handleFetchDataFailure(address));
   }
 
   loadAccountByMuxedAddress(address) {
-    const muxedAccount = MuxedAccount.fromAddress(address, '1')
-    const publicAddress = muxedAccount.account.accountId()
-    this.loadAccountFromServer(publicAddress).then(account => { 
-      this.setState({account, muxedAddress: address, isLoading: false})
-      return null
-    })
+    const muxedAccount = MuxedAccount.fromAddress(address, "1");
+    const publicAddress = muxedAccount.account.accountId();
+    this.loadAccountFromServer(publicAddress).then((account) => {
+      this.setState({ account, muxedAddress: address, isLoading: false });
+      return null;
+    });
   }
 
   loadAccountFromServer(accountId) {
-    return this.props.server
-      .accounts()
-      .accountId(accountId)
-      .call()
+    return this.props.server.accounts().accountId(accountId).call();
   }
 
   render() {
@@ -488,8 +487,8 @@ class AccountContainer extends React.Component {
         urlFn={this.props.server.accountURL}
         {...this.props}
       />
-    )
+    );
   }
 }
 
-export default injectIntl(withServer(AccountContainer))
+export default injectIntl(withServer(AccountContainer));

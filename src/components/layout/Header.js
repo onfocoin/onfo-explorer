@@ -1,20 +1,20 @@
-import React from 'react'
-import Nav from 'react-bootstrap/lib/Nav'
-import Navbar from 'react-bootstrap/lib/Navbar'
-import NavDropdown from 'react-bootstrap/lib/NavDropdown'
-import NavItem from 'react-bootstrap/lib/NavItem'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
-import {Link} from 'react-router-dom'
-import {LinkContainer} from 'react-router-bootstrap'
-import {FormattedMessage, injectIntl} from 'react-intl'
+import React from "react";
+import Nav from "react-bootstrap/lib/Nav";
+import Navbar from "react-bootstrap/lib/Navbar";
+import NavDropdown from "react-bootstrap/lib/NavDropdown";
+import NavItem from "react-bootstrap/lib/NavItem";
+import MenuItem from "react-bootstrap/lib/MenuItem";
+import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
+import { FormattedMessage, injectIntl } from "react-intl";
 
-import LanguageSelector from './LanguageSelector'
-import NetworkSelector from './NetworkSelector'
-import logoImg from '../../img/logo.png'
+import LanguageSelector from "./LanguageSelector";
+import NetworkSelector from "./NetworkSelector";
+import logoImg from "../../img/logo.png";
 
 class Header extends React.Component {
   render() {
-    const {formatMessage} = this.props.intl
+    const { formatMessage } = this.props.intl;
     return (
       <Navbar fluid fixedTop collapseOnSelect>
         <Navbar.Header>
@@ -23,7 +23,7 @@ class Header extends React.Component {
               <img
                 src={logoImg}
                 className="App-logo"
-                alt={formatMessage({id: 'logo'})}
+                alt={formatMessage({ id: "logo" })}
               />
               <span className="brand-text">explorer</span>
             </Link>
@@ -37,14 +37,7 @@ class Header extends React.Component {
               switcher={this.props.languageSwitcher}
             />
           </Navbar.Form>
-          <Navbar.Form pullRight>
-            <NetworkSelector
-              networkAddress={this.props.networkAddress}
-              networkType={this.props.networkType}
-              switchNetworkType={this.props.switchNetworkType}
-              setNetworkAddress={this.props.setNetworkAddress}
-            />
-          </Navbar.Form>
+
           <Nav>
             {/* <LinkContainer to="/graphs">
               <NavItem>Graphs (beta)</NavItem>
@@ -66,28 +59,9 @@ class Header extends React.Component {
             </LinkContainer>
 
             <li className="divider-vertical" />
-
-            <LinkContainer to="/assets">
-              <MenuItem>
-                <FormattedMessage id="assets" />
-              </MenuItem>
-            </LinkContainer>
-            <LinkContainer to="/anchors">
-              <MenuItem>
-                <FormattedMessage id="anchors" />
-              </MenuItem>
-            </LinkContainer>
-            <LinkContainer to="/exchanges">
-              <MenuItem>
-                <FormattedMessage id="exchanges" />
-              </MenuItem>
-            </LinkContainer>
-
-            <li className="divider-vertical" />
-
             <NavDropdown
               eventKey={3}
-              title={formatMessage({id: 'more'})}
+              title={formatMessage({ id: "more" })}
               id="basic-nav-dropdown"
             >
               <LinkContainer to="/effects">
@@ -109,8 +83,8 @@ class Header extends React.Component {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-    )
+    );
   }
 }
 
-export default injectIntl(Header)
+export default injectIntl(Header);

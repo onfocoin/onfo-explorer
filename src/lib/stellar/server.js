@@ -1,11 +1,11 @@
-import sdk from './sdk'
-import networks from './networks'
+import sdk from "./sdk";
+import networks from "./networks";
 
 export const defaultNetworkAddresses = {
-  public: 'https://horizon.stellar.org',
-  test: 'https://horizon-testnet.stellar.org',
-  local: 'http://localhost:8000',
-}
+  public: "https://horizon.onfocoin.com/",
+  test: "https://horizon-legacy.dev.sprockets.io/",
+  local: "https://horizon-legacy.dev.sprockets.io/",
+};
 
 /**
  * Wrap the stellar-sdk Server hiding setup of horizon addresses and adding
@@ -16,24 +16,24 @@ class WrappedServer extends sdk.Server {
   constructor(networkType, networkAddress, storage) {
     try {
       // allowHttp: public/test use HTTPS; local can use HTTP
-      super(networkAddress, {allowHttp: networkType === networks.local})
-    } catch(err) {
-      storage.removeItem('networkAddress')
-      window.location.href = `/error/insecure-horizon-server/?${networkAddress}`
-    };
+      super(networkAddress, { allowHttp: networkType === networks.local });
+    } catch (err) {
+      storage.removeItem("networkAddress");
+      window.location.href = `/error/insecure-horizon-server/?${networkAddress}`;
+    }
   }
 
   //
   // Horizon url resolvers
   //
 
-  accountURL = id => `${this.serverURL}accounts/${id}`
-  effectURL = id => `${this.serverURL}operations/${id}/effects`
-  ledgerURL = id => `${this.serverURL}ledgers/${id}`
-  opURL = id => `${this.serverURL}operations/${id}`
-  txURL = id => `${this.serverURL}transactions/${id}`
+  accountURL = (id) => `${this.serverURL}accounts/${id}`;
+  effectURL = (id) => `${this.serverURL}operations/${id}/effects`;
+  ledgerURL = (id) => `${this.serverURL}ledgers/${id}`;
+  opURL = (id) => `${this.serverURL}operations/${id}`;
+  txURL = (id) => `${this.serverURL}transactions/${id}`;
 }
 
-const Server = (...args)=> new WrappedServer(...args)
+const Server = (...args) => new WrappedServer(...args);
 
-export default Server
+export default Server;

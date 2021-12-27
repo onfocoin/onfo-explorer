@@ -1,44 +1,50 @@
-import React from 'react'
-import Grid from 'react-bootstrap/lib/Grid'
-import Panel from 'react-bootstrap/lib/Panel'
-import Row from 'react-bootstrap/lib/Row'
-import Table from 'react-bootstrap/lib/Table'
-import {Link} from 'react-router-dom'
+import React from "react";
+import Grid from "react-bootstrap/lib/Grid";
+import Panel from "react-bootstrap/lib/Panel";
+import Row from "react-bootstrap/lib/Row";
+import Table from "react-bootstrap/lib/Table";
+import { Link } from "react-router-dom";
 import {
   FormattedDate,
   FormattedMessage,
   FormattedTime,
   injectIntl,
-} from 'react-intl'
-import PropTypes from 'prop-types'
-import {MemoHash, MemoReturn} from 'stellar-sdk'
+} from "react-intl";
+import PropTypes from "prop-types";
+import { MemoHash, MemoReturn } from "stellar-sdk";
 
-import {base64DecodeToHex, handleFetchDataFailure, setTitle} from '../lib/utils'
-import ClipboardCopy from './shared/ClipboardCopy'
-import {withServer} from './shared/HOCs'
-import OperationTable from './OperationTable'
-import {titleWithJSONButton} from './shared/TitleWithJSONButton'
+import {
+  base64DecodeToHex,
+  handleFetchDataFailure,
+  setTitle,
+} from "../lib/utils";
+import ClipboardCopy from "./shared/ClipboardCopy";
+import { withServer } from "./shared/HOCs";
+import OperationTable from "./OperationTable";
+import { titleWithJSONButton } from "./shared/TitleWithJSONButton";
 
 const memoTypeToLabel = {
-  id: 'ID',
-  hash: 'Hash',
-  none: 'None',
-  return: 'Return',
-  text: 'Text',
-}
+  id: "ID",
+  hash: "Hash",
+  none: "None",
+  return: "Return",
+  text: "Text",
+};
 
 class Transaction extends React.Component {
   static defaultProps = {
     operations: [],
-  }
+  };
 
   render() {
-    const {id, urlFn, fee, ledger, memoType, memo, opCount, time} = this.props
-    if (!id) return null
-    
-    setTitle(`Transaction ${id}`)
-    
-    const {formatMessage} = this.props.intl
+    const { id, urlFn, fee, ledger, memoType, memo, opCount, time } =
+      this.props;
+    console.log(fee);
+    if (!id) return null;
+
+    setTitle(`Transaction ${id}`);
+
+    const { formatMessage } = this.props.intl;
 
     return (
       <Grid>
@@ -46,7 +52,7 @@ class Transaction extends React.Component {
           <Panel
             header={titleWithJSONButton(
               <span>
-                {formatMessage({id: 'transaction'})}{' '}
+                {formatMessage({ id: "transaction" })}{" "}
                 <span className="secondary-heading">{id}</span>
                 <ClipboardCopy text={id} />
               </span>,
@@ -60,7 +66,8 @@ class Transaction extends React.Component {
                     <FormattedMessage id="time" />
                   </td>
                   <td>
-                    <FormattedDate value={time} />&nbsp;
+                    <FormattedDate value={time} />
+                    &nbsp;
                     <FormattedTime value={time} />
                   </td>
                 </tr>
@@ -80,7 +87,7 @@ class Transaction extends React.Component {
                 </tr>
                 <tr>
                   <td>
-                    <FormattedMessage id="memo" />{' '}
+                    <FormattedMessage id="memo" />{" "}
                     <span className="secondary-heading">
                       ({memoTypeToLabel[memoType]})
                     </span>
@@ -106,7 +113,7 @@ class Transaction extends React.Component {
           </Grid>
         </Row>
       </Grid>
-    )
+    );
   }
 }
 
@@ -119,32 +126,35 @@ Transaction.propTypes = {
   operations: PropTypes.array,
   time: PropTypes.string,
   urlFn: PropTypes.func,
-}
+};
 
-const TransactionIntl = injectIntl(Transaction)
+const TransactionIntl = injectIntl(Transaction);
 
 class TransactionContainer extends React.Component {
   state = {
     operations: [],
-  }
+  };
 
   componentDidMount() {
-    const id = this.props.match.params.id
-    const server = this.props.server
+    const id = this.props.match.params.id;
+    const server = this.props.server;
     server
       .transactions()
       .transaction(id)
       .call()
-      .then(res => {
-        this.setState({tx: res})
-        return null
+      .then((res) => {
+        //ONFO: Horizon returns fee_charged and there's no fee_paid field
+        if (typeof res.fee === "undefined") res.fee_paid = res.fee_charged;
+        this.setState({ tx: res });
+        console.log(res);
+        return null;
       })
-      .catch(handleFetchDataFailure(id))
+      .catch(handleFetchDataFailure(id));
   }
 
   render() {
-    if (!this.state.tx) return null
-    const tx = this.state.tx
+    if (!this.state.tx) return null;
+    const tx = this.state.tx;
     return (
       <TransactionIntl
         id={tx.id}
@@ -156,8 +166,8 @@ class TransactionContainer extends React.Component {
         time={tx.created_at}
         urlFn={this.props.server.txURL}
       />
-    )
+    );
   }
 }
 
-export default withServer(TransactionContainer)
+export default withServer(TransactionContainer);
