@@ -1,3 +1,6 @@
+# Forked for ONFO Customization
+Fork Date: 27-Dec-2021
+
 # Stellar Explorer
 
 [![Build Status](https://travis-ci.com/chatch/stellarexplorer.svg?branch=master)](https://travis-ci.com/chatch/stellarexplorer)
